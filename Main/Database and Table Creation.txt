@@ -1,0 +1,48 @@
+import mysql.connector
+
+##Connect to SQL
+client=mysql.connector.connect(
+    host='localhost',
+    user='root',
+    password='root'
+)
+cursor=client.cursor()
+
+##Create Youtube Database
+query="create database Youtube"
+cursor.execute(query)
+
+##Connect to YouTube Database
+client=mysql.connector.connect(
+    host='localhost',
+    user='root',
+    password='root',
+    database='youtube'
+)
+cursor=client.cursor()
+
+##Channel Details Table creation
+query="""create table channel_details(channel_id varchar(100) primary key,channel_name varchar(500),
+channel_desc text,channel_pdate varchar(100),channel_plists varchar(100),channel_viewcount int,
+channel_videocount int,channel_subcount int,channel_status varchar(50))"""
+cursor.execute(query)
+
+##Playlist Details Table creation
+query="""create table playlist_details(channel_id varchar(100),playlist_id varchar(100) primary key,
+playlist_name varchar(100),
+Foreign key(channel_id) references youtube.channel_details(channel_id))"""
+cursor.execute(query)
+
+##Video Details Table creation
+query="""create table video_details(video_id varchar(100) primary key,channel_plists varchar(100),channel_id varchar(100),
+video_name varchar(500),video_desc text,video_pdate varchar(100),video_thumbnail varchar(500),video_duration varchar(100),
+video_dur_inseconds int,video_captionsts varchar(100),video_viewcount int,video_likecount int,video_commentcount int,
+video_dislikecount int,
+Foreign key(channel_id) references channel_details(channel_id))"""
+cursor.execute(query)
+
+##Comment Details Table creation
+query="""create table comment_details(video_id varchar(100),comment_id varchar(100) primary key,comment_text text,
+comment_author varchar(100),comment_pdate varchar(100),
+Foreign key(video_id) references video_details(video_id))"""
+cursor.execute(query)
